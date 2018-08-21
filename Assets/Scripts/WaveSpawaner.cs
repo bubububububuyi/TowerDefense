@@ -1,51 +1,69 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WaveSpawaner : MonoBehaviour
 {
-    public GameObject EnemyPrefab;
-    public Transform SpawnPoint;
+    public Wave[] Waves;
 
-    private float _TimeBetweenWaves = 5f;
-    private float _Countdown = 2f;
-    private int _WaveNumber = 1;
+    private float _TimeBetweenWaves = 10f;
+    private float _Countdown = 10f;
+    private int _WaveNumber;
+
+    private bool IsNext;
+
+    public Text TimeText;
 
     // Use this for initialization
     void Start()
     {
-		
+        IsNext = true;
+        _WaveNumber = 0;
+        _Countdown = _TimeBetweenWaves;
     }
 	
     // Update is called once per frame
     void Update()
     {
-        if (_Countdown <= 0f)
+        if (IsNext)
         {
-            StartCoroutine(SpawnWave());
-            _Countdown = _TimeBetweenWaves;
+            if (_Countdown <= 0f)
+            {
+                StartCoroutine(SpawnWave());
+                _Countdown = _TimeBetweenWaves;
+            }
+            _Countdown -= Time.deltaTime;
+            _Countdown = Mathf.Clamp(_Countdown, 0f, Mathf.Infinity);
+            TimeText.text = string.Format("{00:00.00}", _Countdown);
         }
-        _Countdown -= Time.deltaTime;
     }
 
     IEnumerator SpawnWave()
     {
-        for (int i = 0; i < _WaveNumber; i++)
+        IsNext = false;
+        Wave wave = Waves[_WaveNumber];
+        
+        for (int i = 0; i < wave.Count; i++)
         {
-            SpawnEnemy();
-            yield return new WaitForSeconds(0.5f);
+            SpawnEnemy(wave.Enemy);
+            yield return new WaitForSeconds(1f / wave.Rate);
+            if (i == wave.Count - 1)
+            {
+                IsNext = true;
+            }
         }
 
         _WaveNumber++;
-        if (_WaveNumber > 9)
+        if (_WaveNumber >= Waves.Length)
         {
-            _WaveNumber = 1;
+            _WaveNumber = 0;
         }
     }
 
-    private void SpawnEnemy()
+    private void SpawnEnemy(GameObject enemy)
     {
-        Instantiate(EnemyPrefab, new Vector3(5f, 3f, 5f), Quaternion.identity);
+        Instantiate(enemy, new Vector3(5f, 3f, 5f), Quaternion.identity);
     }
 
 }
