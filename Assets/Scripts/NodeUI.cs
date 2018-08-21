@@ -1,11 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NodeUI : MonoBehaviour
 {
     public GameObject UI;
     private Node _Target;
+
+    public Text UpgradeCostText;
+    public Text SellCostText;
 
     // Use this for initialization
     void Start()
@@ -25,11 +29,27 @@ public class NodeUI : MonoBehaviour
         transform.position = _Target.GetBuildPosition();
 
         UI.SetActive(true);
+
+        UpgradeCostText.text = string.Format("${0}", target.TurretBlueprint.UpgradeConst);
+        SellCostText.text = string.Format("${0}", target.TurretBlueprint.SellCost);
+
     }
 
     public void Hide()
     {
         UI.SetActive(false);
+    }
+
+    public void Upgrade()
+    {
+        _Target.UpgradeTurret();
+        BuildManager.Instance.DeselectNode();
+    }
+
+    public void Sell()
+    {
+        _Target.SellTurret();
+        BuildManager.Instance.DeselectNode();
     }
 
 }

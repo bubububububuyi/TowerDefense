@@ -52,15 +52,15 @@ public class BuildManager : MonoBehaviour
         NodeUI.Hide();
     }
 
-    public void BuildTurretOn(Node node)
-    {
-        GameObject turret = (GameObject)Instantiate(_TurretToBuild.Prefab, node.GetBuildPosition(), Quaternion.identity);
-        node.Turret = turret;
-        ClientPlayer.Money -= _TurretToBuild.Const;
-
-        GameObject effect = (GameObject)Instantiate(BuildEffect, node.GetBuildPosition(), Quaternion.identity);
-        Destroy(effect, 3f);
-    }
+//    public void BuildTurretOn(Node node)
+//    {
+//        GameObject turret = (GameObject)Instantiate(_TurretToBuild.Prefab, node.GetBuildPosition(), Quaternion.identity);
+//        node.Turret = turret;
+//        ClientPlayer.Money -= _TurretToBuild.Const;
+//
+//        GameObject effect = (GameObject)Instantiate(BuildEffect, node.GetBuildPosition(), Quaternion.identity);
+//        Destroy(effect, 3f);
+//    }
 
     public void SelectNode(Node node)
     {
@@ -77,8 +77,12 @@ public class BuildManager : MonoBehaviour
 
     public void DeselectNode()
     {
-        Debug.LogError("XXXX");
         CancelSelectTurretToBuild();
+    }
+
+    public TurretBlueprint GetTurretToBuild()
+    {
+        return _TurretToBuild;
     }
 
 }
